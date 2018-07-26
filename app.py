@@ -67,8 +67,17 @@ while True:
         print("Received request %s" % str(extra))
 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # conversion to rgb
-    image_size = image.shape
-
+    orig_img_size = np.array(image.shape)
+    print "shape: ", image.shape
+    INPUT_SIZE = 368
+    scale=1.0 
+    if orig_img_size[0] > orig_img_size[1]:
+        scale = INPUT_SIZE / (orig_img_size[0] * 1.0)
+    else:
+        scale = INPUT_SIZE / (orig_img_size[1] * 1.0)
+    image_size = np.round(orig_img_size * scale).astype(np.int32)
+    image = cv2.resize(image, (0, 0), fx=scale,fy=scale,interpolation=cv2.INTER_CUBIC)
+ 
     """
     INPUT_SIZE = 368
 
@@ -76,7 +85,7 @@ while True:
     self.scale = utils.config.INPUT_SIZE / (self.orig_img_size[0] * 1.0)
     self.img_size = np.round(self.orig_img_size * self.scale).astype(np.int32)
 
-    image = cv2.resize(image, (0, 0), fx=self.scale,fy=self.scale,     interpolation=cv2.INTER_CUBIC)
+    image = cv2.resize(image, (0, 0), fx=self.scale,fy=self.scale,interpolation=cv2.INTER_CUBIC)
 
     """
     try:
@@ -95,6 +104,8 @@ while True:
 
         # Show 2D and 3D poses
         pltimg=display_results(image, pose_2d, visibility, pose_3d)
+
+        print "pose_2d", pose_2d
 
         # print json
         lift={}

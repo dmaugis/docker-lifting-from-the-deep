@@ -1,9 +1,4 @@
 #nvidia-docker build  -t lifting-from-the-deep:gpu .
-
-R1=$(realpath $1)
-D1=$(dirname $R1)
-F1=$(basename $R1)
 xhost +
-#nvidia-docker run -it --rm -e DISPLAY=$DISPLAY  -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $D1:/images  dmaugis/lifting-from-the-deep:gpu python applications/demo.py
-nvidia-docker run -it --rm -e DISPLAY=$DISPLAY  -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $D1:/images  dmaugis/lifting-from-the-deep:gpu python applications/app.py $F1
+nvidia-docker run -it --rm -e DISPLAY=$DISPLAY  -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $(realpath ./shared):/shared  lifting-from-the-deep:gpu python applications/app.py $*
 

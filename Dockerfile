@@ -14,9 +14,9 @@ WORKDIR /Lifting-from-the-Deep
 RUN ./setup.sh
 #RUN python applications/demo.py
 ADD zmqnparray.py applications/
-ADD app.py /Lifting-from-the-Deep/applications 
+ADD rep.py /Lifting-from-the-Deep/applications 
 #CMD python applications/demo.py
-CMD python applications/app.py
+CMD python applications/rep.py
 
 
 

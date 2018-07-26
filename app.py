@@ -77,7 +77,16 @@ while True:
         scale = INPUT_SIZE / (orig_img_size[1] * 1.0)
     image_size = np.round(orig_img_size * scale).astype(np.int32)
     image = cv2.resize(image, (0, 0), fx=scale,fy=scale,interpolation=cv2.INTER_CUBIC)
- 
+
+    delta_w = INPUT_SIZE - image_size[1]
+    delta_h = INPUT_SIZE - image_size[0]
+    top, bottom = delta_h//2, delta_h-(delta_h//2)
+    left, right = delta_w//2, delta_w-(delta_w//2)
+
+    color = [0, 0, 0]
+    image = cv2.copyMakeBorder(image, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color) 
+    image_size =np.array(image.shape)
+
     """
     INPUT_SIZE = 368
 

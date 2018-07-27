@@ -9,11 +9,11 @@ def send(socket, array, flags=0, copy=True, track=False,extra=None):
     md = {}
     if extra is not None:
        md["extra"]=extra
-    md['dtype'] = str(A.dtype)
-    md['shape'] = A.shape
-    #cv2.imshow('zmqnparray::send',A)
-    #cv2.waitKey(0)
+    if A is not None:
+       md['dtype'] = str(A.dtype)
+       md['shape'] = A.shape
     socket.send_json(md, flags|zmq.SNDMORE)
+    #print "md: ",md
     return socket.send(A, flags, copy=copy, track=track)
 
 def recv(socket, flags=0, copy=True, track=False):
@@ -25,9 +25,9 @@ def recv(socket, flags=0, copy=True, track=False):
     A=None
     if 'dtype' in md:
        if 'shape' in md:
-          A = np.frombuffer(msg, dtype=md['dtype'])
-          A = A.reshape(md['shape'])
-          #cv2.imshow('zmqnparray::recv',A)
-          #cv2.waitKey(0)
+          if md['dtype']!='object':
+             A = np.frombuffer(msg, dtype=md['dtype'])
+             A = A.reshape(md['shape'])
     return A, extra
+
 

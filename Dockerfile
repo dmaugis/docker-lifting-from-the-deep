@@ -6,6 +6,7 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN pip install simplejson
 RUN pip install pyzmq
+RUN pip install docopt
 
 # Set the working directory to /Lifting-from-the-Deep
 WORKDIR /

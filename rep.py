@@ -1,12 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+help = """zmqlift
+ 
+Usage:
+  zmqlift
+  zmqlift --display
+  zmqlift --zmq <string>
+  zmqlift -h | --help
 
-import __init__
-
-from lifting import PoseEstimator
-from lifting.utils import draw_limbs
-from lifting.utils import plot_pose
+Options:
+  --display          display received.
+  -h --help          This help.
+ 
+(c) Sample Copyright
+"""
 
 import sys
 import cv2
@@ -16,7 +24,18 @@ import numpy as np
 import zmqnparray as zmqa
 import simplejson as json
 import matplotlib.pyplot as plt
+from docopt import docopt
+import os
+import os.path
 from os.path import dirname, realpath
+
+
+import __init__
+
+from lifting import PoseEstimator
+from lifting.utils import draw_limbs
+from lifting.utils import plot_pose
+
 
 DIR_PATH = dirname(realpath(__file__))
 PROJECT_PATH = realpath(DIR_PATH + '/..')
@@ -27,33 +46,14 @@ SESSION_PATH = SAVED_SESSIONS_DIR + '/init_session/init'
 PROB_MODEL_PATH = SAVED_SESSIONS_DIR + '/prob_model/prob_model_params.mat'
 
 # parse arguments
-parser = argparse.ArgumentParser(description='Estimates 2d and 3d human pose from photo.')
-parser.add_argument('--display', action="store_true", default=False,help='display graphical result')
-parser.add_argument('--zmq', action="store", default="tcp://*:5555", help='publish subscribe url')
-args=parser.parse_args()
+#parser = argparse.ArgumentParser(description='Estimates 2d and 3d human pose from photo.')
+#parser.add_argument('--display', action="store_true", default=False,help='display graphical result')
+#parser.add_argument('--zmq', action="store", default="tcp://*:5555", help='publish subscribe url')
+#args=parser.parse_args()
 
-print args
+args=docopt(help)
+#print args
 
-def display_results(in_image, data_2d, joint_visibility, data_3d):
-    """Plot 2D and 3D poses for each of the people in the image."""
-    fig=plt.figure()
-    draw_limbs(in_image, data_2d, joint_visibility)
-    plt.imshow(in_image)
-    plt.axis('off')
-    fig.canvas.draw()
-    data1 = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-    data1 = data1.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-
-    # Show 3D poses
-    for single_3D in data_3d:
-        # or plot_pose(Prob3dPose.centre_all(single_3D))
-        fig=plot_pose(single_3D)
-        pass
-    fig.canvas.draw()
-    data2 = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-    data2 = data2.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-    plt.close('all')
-    return data2,data1 
 
 def size_image(image):
     orig_img_size = np.array(image.shape)
@@ -112,7 +112,7 @@ while True:
     try:
     #if True:
         pose_2d, visibility, pose_3d = pose_estimator.estimate(image)
-        if args.display:
+        if 'display' in args:
            plt3d,plt2d=display_results(image, pose_2d, visibility, pose_3d)
 
         lift={}

@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.7.1-devel-gpu
+FROM denistome/lifting-from-the-deep
 
 RUN apt-get update 
 RUN apt-get install -y --no-install-recommends \
@@ -9,14 +9,9 @@ RUN pip install pyzmq
 RUN pip install docopt
 
 # Set the working directory to /Lifting-from-the-Deep
-WORKDIR /
-RUN git clone https://github.com/DenisTome/Lifting-from-the-Deep-release.git Lifting-from-the-Deep
 WORKDIR /Lifting-from-the-Deep
-RUN ./setup.sh
-#RUN python applications/demo.py
 ADD zmqnparray.py applications/
 ADD rep.py /Lifting-from-the-Deep/applications 
-#CMD python applications/demo.py
 CMD python applications/rep.py
 
 
